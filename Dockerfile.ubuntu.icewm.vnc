@@ -45,9 +45,12 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN $INST_SCRIPTS/tigervnc.sh
 RUN $INST_SCRIPTS/no_vnc.sh
 
-### Install firefox and chrome browser
-RUN $INST_SCRIPTS/firefox.sh
-RUN $INST_SCRIPTS/chrome.sh
+# install app
+WORKDIR /tmp
+RUN wget https://api.github.com/repos/saenzramiro/rambox/releases/latest
+RUN wget $(grep 'https' latest | grep '\.deb' | grep $(dpkg --print-architecture | grep -o '[0-9]\+') | cut -d '"' -f 4)
+RUN dpkg --force-depends -i *.deb
+RUN apt -f install -y
 
 ### Install IceWM UI
 RUN $INST_SCRIPTS/icewm_ui.sh
